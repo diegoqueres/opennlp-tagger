@@ -172,7 +172,7 @@ public class MainController implements Initializable, Controller {
         try {
             var file = openedFile.get().toFile();
             fileService.save(file, txtaText.getText());
-            saveTagPreferences();
+            savePreferences();
         } finally {
             preferences.put("directory.last", openedFile.get().toFile().getParent());
         }
@@ -207,7 +207,7 @@ public class MainController implements Initializable, Controller {
     }
 
     private void quit(WindowEvent event) {
-        saveTagPreferences();
+        savePreferences();
 
         if (txtaText.getText().isEmpty()) {
             Platform.exit();
@@ -228,9 +228,14 @@ public class MainController implements Initializable, Controller {
         }
     }
 
-    private void saveTagPreferences() {
+    private void savePreferences() {
         preferences.put("tags.open", this.txtOpenTag.getText().trim());
         preferences.put("tags.close", this.txtCloseTag.getText().trim());
+
+        preferences.put("file.last", openedFile.get().toFile().getPath());
+        preferences.put("file.last.scroll-top", String.valueOf(txtaText.getScrollTop()));
+        preferences.put("file.last.anchor", String.valueOf(txtaText.getAnchor()));
+        preferences.put("file.last.caret-pos", String.valueOf(txtaText.getCaretPosition()));
     }
 
     @FXML
