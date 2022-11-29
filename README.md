@@ -1,17 +1,51 @@
 # opennlp-tagger
 
-## _Desktop app to tagging for Open NLP models_
+
+## _Desktop editor to tagging for Open NLP models_
+
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 A simple desktop application to help manually tagging files to train models for Apache Open NLP _(or other Natural Language Processing (NLP) projects)_.
 
+![Screenshot](./imgs/screenshot.jpg "OpenNlp Tagger Editor")
+   
 
-## Build
+## Build and run
 
-You must have Java environment installed on your OS. Maven and JavaFX too.
+### Prerequisites
+You must have Java SE installed in your environment and set JAVA_HOME.
 
-To build this project, run command on project path:
+### Clone repository
+
+Clone this repository: `git clone https://github.com/diegoqueres/opennlp-tagger`. 
+
+After that, follow these steps:
+
+### 1) Enter on project path _(by your OS terminal)_
 ```bash
-mvn clean install
+cd <<opennlp-tagger path>>
+```
+
+### 2) Build project
+
+**Windows**:
+```bash
+./mvnw.cmd clean install
+```
+**Unix system**:
+```bash
+./mvnw clean install
+```
+
+### 3) Run application
+
+**Windows**:
+```bash
+./mvnw.cmd javafx:run
+```
+**Unix system**:
+```bash
+./mvnw javafx:run
 ```
 
 
@@ -21,5 +55,4 @@ MIT
 
 **Free Software, Hell Yeah!**
 
-
-
+  [Maven Wrapper]: <https://www.baeldung.com/maven-wrapper>
