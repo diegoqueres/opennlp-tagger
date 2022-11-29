@@ -6,7 +6,7 @@
     <artifactId>opennlp-tagger</artifactId>
     <name>Opennlp Tagger</name>
     <description>Desktop application to help tagging files to train models for Apache Open NLP or other Natural Language Processing (NLP) projects.</description>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <url>https://github.com/diegoqueres/opennlp-tagger</url>
     <developers>
         <developer>
