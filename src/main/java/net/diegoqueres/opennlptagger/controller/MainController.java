@@ -34,21 +34,23 @@ public class MainController implements Initializable, Controller {
 
     @FXML
     private TextField txtOpenTag;
+
     @FXML
     private TextField txtCloseTag;
+
     @FXML
     private TextArea txtaText;
-    
+
     private Stage stage;
-    
+
     private FileChooser fileChooser;
-    
+
     private FileService fileService;
-    
+
     private TagService tagService;
-    
+
     private Optional<Path> openedFile;
-    
+
     private Preferences preferences;
 
     private Properties projectProperties;
@@ -76,7 +78,7 @@ public class MainController implements Initializable, Controller {
         initFileChooser();
         loadPreferences();
     }
-    
+
     private void initFileChooser() {
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters()
@@ -97,7 +99,7 @@ public class MainController implements Initializable, Controller {
         var lastDirectory = preferences.get("directory.last", System.getProperty("user.home"));
         fileChooser.setInitialDirectory(Path.of(lastDirectory).toFile());
     }
-    
+
     @FXML
     private void newFile(ActionEvent event) {
         openedFile = Optional.empty();
@@ -107,16 +109,17 @@ public class MainController implements Initializable, Controller {
     @FXML
     private void openFile(ActionEvent event) {
         fileChooser.setTitle("Open File");
-        
+
         var path = Path.of(preferences.get("directory.last", System.getProperty("user.home")));
         fileChooser.setInitialDirectory(path.toFile());
-        
+
         var file = fileChooser.showOpenDialog(stage);
         if (nonNull(file)) {
             try {
                 var content = fileService.open(file);
                 txtaText.setText(content.toString());
                 openedFile = Optional.of(file.toPath());
+                loadLastFilePreferences(file.toPath());
             } catch (InvalidInputException e) {
                 WarningDialog.show("Warning", "Something went wrong...", e.getMessage(), e.getUserAdvice());
             } catch (IOException e) {
@@ -172,7 +175,7 @@ public class MainController implements Initializable, Controller {
         try {
             var file = openedFile.get().toFile();
             fileService.save(file, txtaText.getText());
-            saveTagPreferences();
+            savePreferences();
         } finally {
             preferences.put("directory.last", openedFile.get().toFile().getParent());
         }
@@ -207,7 +210,7 @@ public class MainController implements Initializable, Controller {
     }
 
     private void quit(WindowEvent event) {
-        saveTagPreferences();
+        savePreferences();
 
         if (txtaText.getText().isEmpty()) {
             Platform.exit();
@@ -228,9 +231,28 @@ public class MainController implements Initializable, Controller {
         }
     }
 
-    private void saveTagPreferences() {
+    private void savePreferences() {
         preferences.put("tags.open", this.txtOpenTag.getText().trim());
         preferences.put("tags.close", this.txtCloseTag.getText().trim());
+
+        preferences.put("file.last.path", openedFile.get().toFile().getPath());
+        preferences.put("file.last.scroll-top", String.valueOf(txtaText.getScrollTop()));
+        preferences.put("file.last.anchor", String.valueOf(txtaText.getAnchor()));
+        preferences.put("file.last.caret-pos", String.valueOf(txtaText.getCaretPosition()));
+    }
+
+    private void loadLastFilePreferences(Path fileOpened) {
+        var lastFilePath = preferences.get("file.last.path", "");
+        if (lastFilePath.equals(fileOpened.toString())) {
+            if (!preferences.get("file.last.scroll-top","").isBlank()) {
+                txtaText.setScrollTop(Double.parseDouble(preferences.get("file.last.scroll-top","")));
+            }
+            if (!preferences.get("file.last.anchor","").isBlank() && !preferences.get("file.last.caret-pos","").isBlank()) {
+                int anchor = Integer.parseInt(preferences.get("file.last.anchor","0"));
+                int caret = Integer.parseInt(preferences.get("file.last.caret-pos","0"));
+                txtaText.selectRange(anchor, caret);
+            }
+        }
     }
 
     @FXML
@@ -238,23 +260,23 @@ public class MainController implements Initializable, Controller {
         var openTag = txtOpenTag.getText();
         var closeTag = txtCloseTag.getText();
         Tag tag = new Tag(openTag, closeTag);
-        
+
         var content = new StringBuffer(txtaText.getText());
         var initialPos = txtaText.getSelection().getStart();
         var endPos = txtaText.getSelection().getEnd();
-        
+
         tagService.tagIt(tag, content, initialPos, endPos);
-         
+
         updateContentWithoutScroll(content.toString());
     }
-    
+
     private void updateContentWithoutScroll(String result) {
         double pos = txtaText.getScrollTop();
         int anchor = txtaText.getAnchor();
         int caret = txtaText.getCaretPosition();
         txtaText.setText(result);
         txtaText.setScrollTop(pos);
-        txtaText.selectRange(anchor, caret);       
+        txtaText.selectRange(anchor, caret);
     }
 
     @FXML
