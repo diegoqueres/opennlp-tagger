@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.IOException;
 import java.net.URL;
 
-public class App extends Application {
+public class Launcher extends Application {
     private static final float INITIAL_WINDOW_WIDTH_PERCENT = 0.85f;
     private static final float INITIAL_WINDOW_HEIGHT_PERCENT = 0.75f;
 
@@ -42,7 +42,7 @@ public class App extends Application {
     }
 
     private static Pair<Controller, Parent> loadFXML(String fxml) throws IOException {
-        URL resource = App.class.getResource(fxml + ".fxml");
+        URL resource = Launcher.class.getResource(fxml + ".fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(resource);
 
         Parent parent = fxmlLoader.load();
