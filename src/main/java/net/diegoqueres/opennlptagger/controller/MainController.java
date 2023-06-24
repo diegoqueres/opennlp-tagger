@@ -235,7 +235,9 @@ public class MainController implements Initializable, Controller {
         preferences.put("tags.open", this.txtOpenTag.getText().trim());
         preferences.put("tags.close", this.txtCloseTag.getText().trim());
 
-        preferences.put("file.last.path", openedFile.get().toFile().getPath());
+        if (openedFile.isPresent())
+            preferences.put("file.last.path", openedFile.get().toFile().getPath());
+
         preferences.put("file.last.scroll-top", String.valueOf(txtaText.getScrollTop()));
         preferences.put("file.last.anchor", String.valueOf(txtaText.getAnchor()));
         preferences.put("file.last.caret-pos", String.valueOf(txtaText.getCaretPosition()));
